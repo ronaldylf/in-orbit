@@ -79,11 +79,11 @@ export async function getWeekSummary() {
           Number
         ),
       goalsPerDay: sql<GoalsPerDay>`
-          JSON_OBJECT_AGG(
+          COALESCE(JSON_OBJECT_AGG(
             ${goalsCompletedByWeekDay.completedAtDate},
             ${goalsCompletedByWeekDay.completions}
-          )
-        `,
+      ), '{}'::JSON)
+        `.mapWith(Object),
     })
     .from(goalsCompletedByWeekDay)
 
